@@ -46,7 +46,17 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
 
           script: |
+
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
-            docker stop devops-app || true
-            docker rm devops-app || true            
+
+            if [ "$(docker ps -q -f name=devops-app)" ]; then
+            echo "Stopping existing container..."
+            docker stop devops-app
+            fi
+
+            if [ "$(docker ps -aq -f name=devops-app)" ]; then
+            echo "Removing existing container..."
+            docker rm devops-app
+            fi 
+                       
             docker run -d -p 8080:8080 --name devops-app ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
