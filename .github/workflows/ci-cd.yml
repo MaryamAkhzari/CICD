@@ -30,14 +30,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          timeout: 3m
 
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           push: true
           tags: maryamakhzari/devops-app:latest
-          timeout: 5m
 
       - name: deploy
         uses: appleboy/ssh-action@master
@@ -50,9 +48,11 @@ jobs:
           timeout: 5m
 
           script: |
-            for i in {1..5}; do
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest && break || sleep 15;
+            set -x
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest 
             done
+
+            docker run -d -p 8080:8080 --name devops-app ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
 
             if [ "$(docker ps -q -f name=devops-app)" ]; then
             echo "Stopping existing container..."
@@ -62,6 +62,4 @@ jobs:
             if [ "$(docker ps -aq -f name=devops-app)" ]; then
             echo "Removing existing container..."
             docker rm devops-app
-            fi 
-
-            docker run -d -p 8080:8080 --name devops-app ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
+            fi
