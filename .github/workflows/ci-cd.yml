@@ -48,10 +48,6 @@ jobs:
           timeout: 5m
 
           script: |
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest 
-
-            docker run -d -p 8080:8080 --name devops-app ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
-
             if [ "$(docker ps -q -f name=devops-app)" ]; then
             echo "Stopping existing container..."
             docker stop devops-app
@@ -61,3 +57,7 @@ jobs:
             echo "Removing existing container..."
             docker rm devops-app
             fi
+
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest 
+
+            docker run -d -p 8080:8080 --name devops-app ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
