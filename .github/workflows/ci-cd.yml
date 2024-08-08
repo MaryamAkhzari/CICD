@@ -48,6 +48,8 @@ jobs:
           timeout: 5m
 
           script: |
+            set -e
+
             if [ "$(docker ps -q -f name=devops-app)" ]; then
             echo "Stopping existing container..."
             docker stop devops-app
