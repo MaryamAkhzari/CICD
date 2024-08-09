@@ -37,6 +37,12 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
 
+      - name: Configure DNS for Docker
+        run: |
+        echo "nameserver 178.22.122.100" | sudo tee /etc/resolvconf/resolv.conf.d/head
+        echo "nameserver 185.51.200.2" | sudo tee /etc/resolvconf/resolv.conf.d/head
+        sudo resolvconf -u    
+
       - name: deploy
         uses: appleboy/ssh-action@master
         with:
@@ -58,6 +64,6 @@ jobs:
             docker rm devops-app
             fi
 
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest 
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
 
             docker run -d -p 8080:8080 --name devops-app ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
