@@ -48,9 +48,19 @@ jobs:
 
           script: |
 
-            echo "nameserver 178.22.122.100" | sudo tee /etc/resolvconf/resolv.conf.d/head
-            echo "nameserver 185.51.200.2" | sudo tee /etc/resolvconf/resolv.conf.d/head
-            sudo resolvconf -u
+            shecan()
+              {
+             LOC="/etc/resolvconf/resolv.conf.d/head"
+             if [[ $1 == "remove" ]]; then
+              echo | sudo tee $LOC
+             else
+              echo "nameserver 178.22.122.100" | sudo tee $LOC
+              echo "nameserver 185.51.200.2" | sudo tee -a $LOC
+             fi
+             sudo resolvconf -u
+              }
+
+            shecan
 
             if [ "$(docker ps -q -f name=devops-app)" ]; then
             echo "Stopping existing container..."
@@ -65,3 +75,5 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
 
             docker run -d -p 8080:8080 --name devops-app ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
+
+            shecan remove
