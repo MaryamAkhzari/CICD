@@ -37,12 +37,6 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
 
-      - name: Configure DNS for Docker
-        run: |
-          echo "nameserver 178.22.122.100" | sudo tee /etc/resolvconf/resolv.conf.d/head
-          echo "nameserver 185.51.200.2" | sudo tee /etc/resolvconf/resolv.conf.d/head
-          sudo resolvconf -u
-
       - name: deploy
         uses: appleboy/ssh-action@master
         with:
@@ -53,6 +47,11 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
 
           script: |
+
+            echo "nameserver 178.22.122.100" | sudo tee /etc/resolvconf/resolv.conf.d/head
+            echo "nameserver 185.51.200.2" | sudo tee /etc/resolvconf/resolv.conf.d/head
+            sudo resolvconf -u
+
             if [ "$(docker ps -q -f name=devops-app)" ]; then
             echo "Stopping existing container..."
             docker stop devops-app
