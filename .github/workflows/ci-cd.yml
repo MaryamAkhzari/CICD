@@ -51,8 +51,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          timeout: 5m
-
+          
           script: |
             if [ "$(docker ps -q -f name=devops-app)" ]; then
             echo "Stopping existing container..."
