@@ -61,5 +61,3 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
 
             docker run -d -p 8080:8080 --name devops-app ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
-
-            shecan remove
