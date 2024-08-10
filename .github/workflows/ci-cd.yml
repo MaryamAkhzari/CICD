@@ -46,19 +46,24 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           timeout: 5m
-
           script: |
+            # Configure DNS
+            echo "nameserver 178.22.122.100" | sudo tee /etc/resolv.conf
+            echo "nameserver 185.51.200.2" | sudo tee -a /etc/resolv.conf
 
+            # Restart Docker service to apply DNS changes
+            sudo systemctl restart docker
+
+            # Pull and run the Docker image
             if [ "$(docker ps -q -f name=devops-app)" ]; then
-            echo "Stopping existing container..."
-            docker stop devops-app
+              echo "Stopping existing container..."
+              docker stop devops-app
             fi
 
             if [ "$(docker ps -aq -f name=devops-app)" ]; then
-            echo "Removing existing container..."
-            docker rm devops-app
+              echo "Removing existing container..."
+              docker rm devops-app
             fi
 
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
-
             docker run -d -p 8080:8080 --name devops-app ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
