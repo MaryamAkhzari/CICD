@@ -51,20 +51,19 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          timeout: 5m
 
           script: |
 
-            if [ "$(docker ps -q -f name=devops-app)" ]; then
+            if [ "$(docker ps -q -f name=docker.arvancloud.ir/${{ secrets.DOCKERHUB_USERNAME }}/devops-app)" ]; then
             echo "Stopping existing container..."
-            docker stop devops-app
+            docker stop docker.arvancloud.ir/${{ secrets.DOCKERHUB_USERNAME }}/devops-app
             fi
 
-            if [ "$(docker ps -aq -f name=devops-app)" ]; then
+            if [ "$(docker ps -aq -f name=docker.arvancloud.ir/${{ secrets.DOCKERHUB_USERNAME }}/devops-app)" ]; then
             echo "Removing existing container..."
-            docker rm devops-app
+            docker rm docker.arvancloud.ir/${{ secrets.DOCKERHUB_USERNAME }}/devops-app
             fi
 
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
+            docker pull docker.arvancloud.ir/${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
 
-            docker run -d -p 8080:8080 --name devops-app ${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
+             docker run -d -p 8080:8080 --name devops-app docker.arvancloud.ir/${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
