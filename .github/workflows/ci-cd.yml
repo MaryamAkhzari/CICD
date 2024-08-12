@@ -54,14 +54,14 @@ jobs:
 
           script: |
 
-            if [ "$(docker ps -q -f name=docker.arvancloud.ir/${{ secrets.DOCKERHUB_USERNAME }}/devops-app)" ]; then
+            if [ "$(docker ps -q -f name=devops-app)" ]; then
             echo "Stopping existing container..."
-            docker stop docker.arvancloud.ir/${{ secrets.DOCKERHUB_USERNAME }}/devops-app
+            docker stop devops-app
             fi
 
-            if [ "$(docker ps -aq -f name=docker.arvancloud.ir/${{ secrets.DOCKERHUB_USERNAME }}/devops-app)" ]; then
+            if [ "$(docker ps -aq -f name=devops-app)" ]; then
             echo "Removing existing container..."
-            docker rm docker.arvancloud.ir/${{ secrets.DOCKERHUB_USERNAME }}/devops-app
+            docker rm devops-app
             fi
 
             docker pull docker.arvancloud.ir/${{ secrets.DOCKERHUB_USERNAME }}/devops-app:latest
